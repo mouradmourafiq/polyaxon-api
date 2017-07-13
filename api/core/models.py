@@ -17,6 +17,7 @@ from libs.models import DiffModel
 
 
 class Loss(DiffModel):
+    """The `Loss` model serializes the module and parameters to define a loss funciton."""
     LOSSES = ((obj, obj) for obj in plx.losses.LOSSES.keys())
 
     module = models.CharField(max_length=256, choices=LOSSES)
@@ -41,6 +42,7 @@ class Loss(DiffModel):
 
 
 class Metric(DiffModel):
+    """The `Metric` model serializes the module and parameters to define a metric function."""
     METRICS = ((obj, obj) for obj in plx.metrics.EVAL_METRICS.keys())
 
     module = models.CharField(max_length=256, choices=METRICS)
@@ -66,6 +68,7 @@ class Metric(DiffModel):
 
 
 class AgentMemory(DiffModel):
+    """The `AgentMemory` model serializes the module and parameters to define an agent memory."""
     MEMORIES = ((obj, obj) for obj in plx.rl.memories.MEMORIES.keys())
 
     module = models.CharField(max_length=256, choices=MEMORIES)
@@ -91,6 +94,7 @@ class AgentMemory(DiffModel):
 
 
 class Optimizer(DiffModel):
+    """The `Optimizer` model serializes the module and parameters to define a model optimizer."""
     OPTIMIZERS = ((obj, obj) for obj in plx.optimizers.OPTIMIZERS.keys())
 
     module = models.CharField(max_length=256, choices=OPTIMIZERS)
@@ -139,6 +143,7 @@ class Optimizer(DiffModel):
 
 
 class Bridge(DiffModel):
+    """The `Bridge` model serializes the module and parameters to define a generator's bridge."""
     BRIDGES = ((obj, obj) for obj in plx.bridges.BRIDGES.keys())
 
     module = models.CharField(max_length=256, choices=BRIDGES)
@@ -169,6 +174,7 @@ class Bridge(DiffModel):
 
 
 class SubGraph(DiffModel):
+    """The `SugGraph` model serializes the definition of computation graph."""
     definition = models.TextField()
 
     def to_dict(self):
@@ -191,6 +197,7 @@ class SubGraph(DiffModel):
 
 
 class Encoder(DiffModel):
+    """The `Encoder` model serializes the definition of a generator's encoder graph."""
     ENCODERS = ((obj, obj) for obj in plx.encoders.ENCODERS.keys())
 
     module = models.CharField(max_length=256, choices=ENCODERS, null=True, blank=True)
@@ -217,6 +224,7 @@ class Encoder(DiffModel):
 
 
 class Decoder(DiffModel):
+    """The `Encoder` model serializes the definition of a generator's decoder graph."""
     DECODERS = ((obj, obj) for obj in plx.decoders.DECODERS.keys())
 
     module = models.CharField(max_length=256, choices=DECODERS, null=True, blank=True)
@@ -243,6 +251,7 @@ class Decoder(DiffModel):
 
 
 class PolyaxonModel(DiffModel):
+    """The `PolyaxonModel` model serializes the params to define a deep learning model."""
     MODELS = ((obj, obj) for obj in plx.models.MODELS.keys())
     SUMMARIES = ((obj, obj) for obj in SummaryOptions.VALUES)
 
@@ -339,6 +348,7 @@ class PolyaxonModel(DiffModel):
 
 
 class Estimator(DiffModel):
+    """The `Estimator` model serializes the params to define a polyaxon estimator."""
     ESTIMATORS = ((obj, obj) for obj in plx.estimators.ESTIMATORS.keys())
 
     module = models.CharField(max_length=256, choices=ESTIMATORS)
@@ -365,6 +375,7 @@ class Estimator(DiffModel):
 
 
 class Agent(DiffModel):
+    """The `Agent` model serializes the params to define a reinforcement learning agent."""
     AGENTS = ((obj, obj) for obj in plx.estimators.AGENTS.keys())
 
     module = models.CharField(max_length=256, choices=AGENTS)
@@ -402,6 +413,9 @@ class Agent(DiffModel):
 
 
 class Environment(DiffModel):
+    """The `Environment` model serializes a the module and params to define a reinforcement
+    learning environment.
+    """
     ENVIRONMENTS = ((obj, obj) for obj in plx.rl.environments.ENVIRONMENTS.keys())
 
     module = models.CharField(max_length=256, choices=ENVIRONMENTS)
@@ -428,6 +442,7 @@ class Environment(DiffModel):
 
 
 class Pipeline(DiffModel):
+    """The `Pipeline` model serializes the params to define an experiment data pipeline."""
     PIPELINES = ((obj, obj) for obj in plx.processing.pipelines.PIPELINES.keys())
 
     module = models.CharField(max_length=256, choices=PIPELINES, null=True, blank=True)
@@ -483,6 +498,7 @@ class Pipeline(DiffModel):
 
 
 class InputData(DiffModel):
+    """The `InputData` model serializes the params to define an experiment input data flow."""
     INPUT_DATA_TYPES = (
         ('NUMPY', 'NUMPY'),
         ('PANDAS', 'PANDAS')
@@ -515,6 +531,7 @@ class InputData(DiffModel):
 
 
 class RunConfig(DiffModel):
+    """The `RunConfig` model serializes the params to define a tensorflow run config."""
     model_dir = models.CharField(max_length=256, blank=True, null=True)
     master = models.CharField(max_length=256, blank=True, null=True)
     num_cores = models.IntegerField(default=0)
@@ -564,6 +581,7 @@ class RunConfig(DiffModel):
 
 
 class BaseExperiment(DiffModel):
+    """The `BaseExperiment` is a base abstract class to define a a polyaxon experiment."""
     HOOK_OPTIONS = ((obj, obj) for obj in HOOKS.keys())
 
     name = models.CharField(max_length=256)
@@ -641,6 +659,7 @@ class BaseExperiment(DiffModel):
 
 
 class Experiment(BaseExperiment):
+    """The `Experiment` model serializes the params to define an experiment."""
     estimator = models.ForeignKey(Estimator)
     train_input_data = models.ForeignKey(InputData, related_name='train')
     eval_input_data = models.ForeignKey(InputData, related_name='eval')
@@ -678,6 +697,9 @@ class Experiment(BaseExperiment):
 
 
 class RLExperiment(BaseExperiment):
+    """The `RLExperiment` model serializes the params to define a
+    reinforcement learning experiment.
+    """
     agent = models.ForeignKey(Agent)
     environment = models.ForeignKey(Environment)
 
